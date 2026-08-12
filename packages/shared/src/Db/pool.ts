@@ -1,16 +1,18 @@
 import { Pool } from "pg";
 import { config } from "dotenv";
+import { resolve } from "node:path";
 
-config();
+const envPath = resolve(__dirname, "../../../../.env");
+config({ path: envPath });
 
 let pool: Pool | null = null;
 
 export const getPool = (): Pool => {
   if (!pool) {
-    const connectionString = process.env.DATA_BASE;
+    const connectionString = process.env.DATA_BASE?.trim();
 
     if (!connectionString) {
-      throw new Error("Database URL is not found");
+      throw new Error(`Database URL is not found. Checked .env path: ${envPath}`);
     }
 
     pool = new Pool({ connectionString });

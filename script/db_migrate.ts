@@ -3,7 +3,8 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { closePool, getPool } from "../packages/shared/src/Db/pool";
 
-config({ path: resolve(process.cwd(), ".env") });
+const envPath = resolve(__dirname, "../.env");
+config({ path: envPath });
 
 async function main() {
   const file = process.argv[2] ?? "Sql/01_user.sql";

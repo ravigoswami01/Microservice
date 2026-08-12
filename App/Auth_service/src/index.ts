@@ -6,6 +6,7 @@ import express, {
 } from "express";
 import { resolve } from "node:path";
 import { AppError, errorHandlear, httpLoger, successResponse } from "shared";
+import authRouter from "./routes/auth.router"
 
 config({ path: resolve(process.cwd(), ".env") });
 config({ path: resolve(process.cwd(), "../../.env") });
@@ -20,6 +21,8 @@ app.use(express.json());
 app.get("/health", (req: Request, res: Response) => {
   successResponse(res, { service: "auth_service" });
 });
+
+app.use("/auth", authRouter)
 
 app.use((_req: Request, res: Response, next: NextFunction) => {
   next(new AppError(404, "Router not found"));

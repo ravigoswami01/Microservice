@@ -1,5 +1,5 @@
 import { AppError } from "shared";
-import { findByEmail, createUser } from "../repostories/user.repo";
+import { findByEmail, createUser, findById } from "../repostories/user.repo";
 import { LoginInput, RegisterInput } from "../schema/auth.schema";
 import bcrypt from "bcryptjs";
 import { convertedToPublicUser } from "../utils/auth.utils";
@@ -27,13 +27,13 @@ export async function register(input: RegisterInput) {
 export async function login(input: LoginInput) {
     const user = await findByEmail(input.email)
     if (!user) {
-        throw new AppError(401, "invalid emale or password")
+        throw new AppError(401, "Invalid email or password")
     }
 
     const valid = await bcrypt.compare(input.password, user.password_hash)
 
     if (!valid) {
-        throw new AppError(401, "Inviled Email or Password")
+        throw new AppError(401, "Invalid email or password")
     }
 
     const token = signToken({ userId: user.id, role: user.role })
@@ -42,4 +42,12 @@ export async function login(input: LoginInput) {
         token,
         user: convertedToPublicUser(user)
     }
+}
+
+export async function getMe(userId: string) {
+    const user = await findById(userId);
+    if (!user) {
+        throw new AppError(404, "user not found")
+    }
+    return convertedToPublicUser(user)
 }

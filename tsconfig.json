@@ -1,0 +1,15 @@
+{
+    "extends": "./tsconfig.base.json",
+    "files": [],
+    "references": [
+        {
+            "path": "App/Auth_service"
+        },
+        {
+            "path": "App/User_service"
+        },
+        {
+            "path": "packages/shared"
+        }
+    ]
+}

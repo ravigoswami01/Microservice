@@ -1,4 +1,4 @@
-export { getPool, closePool } from "./Db/pool";
+export { getPool, closePool, initPool } from "./Db/pool";
 export { AppError } from "./error/AppError";
 export { errorHandlear } from "./error/errorHandlear";
 export { logger } from "./logger/looger";

@@ -5,11 +5,13 @@ import express, {
   type Response,
 } from "express";
 import { resolve } from "node:path";
-import { AppError, errorHandlear, httpLoger, successResponse } from "shared";
+import { AppError, errorHandlear, httpLoger, successResponse, initPool } from "shared";
 import authRouter from "./routes/auth.router"
 
-config({ path: resolve(process.cwd(), ".env") });
-config({ path: resolve(process.cwd(), "../../.env") });
+const envPath = resolve(process.cwd(), "../../.env");
+config({ path: envPath });
+
+console.log("Loaded AUTH_PORT:", process.env.AUTH_PORT);
 
 const PORT = process.env.AUTH_PORT || 3001;
 
@@ -30,6 +32,13 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
 
 app.use(errorHandlear);
 
-app.listen(PORT, () => {
-  console.log(`Auth service listening on port ${PORT}`);
-});
+initPool()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Auth service listening on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Database initialization failed:", err);
+    process.exit(1);
+  });

@@ -8,6 +8,7 @@ const router = Router()
 
 router.post("/register", validateBody(registerSchema), authControllers.Register)
 router.post("/login", validateBody(loginSchema), authControllers.login)
+router.get("/me", authControllers.getMe)
 
 
 

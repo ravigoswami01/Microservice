@@ -2,31 +2,33 @@ import { Pool } from "pg";
 import { config } from "dotenv";
 import { resolve } from "node:path";
 
-const envPath = resolve(__dirname, "../../");
-config({ path: envPath });
+config({ path: resolve(process.cwd(), ".env") });
 
 let pool: Pool | null = null;
 
 export const getPool = (): Pool => {
   if (!pool) {
-    const connectionString = process.env.DATA_BASE?.trim();
+    const connectionString = process.env.DATABASE_URL?.trim();
 
     if (!connectionString) {
-      throw new Error(`Database URL is not found. Checked .env path: ${envPath}`);
+      throw new Error("DATABASE_URL is not found in .env");
     }
+
     const hasSslParams =
       connectionString.includes("sslmode=") || connectionString.includes("uselibpqcompat=");
 
     let finalConnectionString = connectionString;
 
     if (!hasSslParams) {
-      finalConnectionString =
-        connectionString + (connectionString.includes("?") ? "&" : "?") + "sslmode=verify-full";
+      finalConnectionString += connectionString.includes("?")
+        ? "&sslmode=verify-full"
+        : "?sslmode=verify-full";
     } else {
-
       const aliasSslmode = /sslmode=(?:prefer|require|verify-ca)/i;
       if (aliasSslmode.test(connectionString) && !connectionString.includes("uselibpqcompat=")) {
-        finalConnectionString = connectionString + (connectionString.includes("?") ? "&" : "?") + "uselibpqcompat=true";
+        finalConnectionString += connectionString.includes("?")
+          ? "&uselibpqcompat=true"
+          : "?uselibpqcompat=true";
       }
     }
 

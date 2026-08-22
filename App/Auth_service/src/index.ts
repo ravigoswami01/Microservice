@@ -5,7 +5,7 @@ import express, {
   type Response,
 } from "express";
 import { resolve } from "node:path";
-import { AppError, errorHandlear, httpLoger, successResponse, initPool } from "shared";
+import { AppError, errorHandlear, httpLoger, successResponse, initPool, requireGatwaySecret } from "shared";
 import authRouter from "./routes/auth.router"
 
 const envPath = resolve(process.cwd(), "../../.env");
@@ -24,7 +24,7 @@ app.get("/health", (req: Request, res: Response) => {
   successResponse(res, { service: "auth_service" });
 });
 
-app.use("/auth", authRouter)
+app.use("/auth", requireGatwaySecret, authRouter)
 
 app.use((_req: Request, res: Response, next: NextFunction) => {
   next(new AppError(404, "Router not found"));

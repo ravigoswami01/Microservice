@@ -2,7 +2,7 @@ import { Pool } from "pg";
 import { config } from "dotenv";
 import { resolve } from "node:path";
 
-const envPath = resolve(__dirname, "../../../../.env");
+const envPath = resolve(__dirname, "../../");
 config({ path: envPath });
 
 let pool: Pool | null = null;

@@ -5,3 +5,8 @@ export { logger } from "./logger/looger";
 export { httpLoger } from "./logger/httpsloger";
 export { successResponse, failResponse } from "./response/response";
 export { validateBody } from "./validation/validationBody";
+
+
+export type { jwtPayload, UserRole } from "./auth/types"
+export { signToken, verifyToken } from "./auth/jwt"
+export { requireGatwaySecret } from "./auth/getwatAuth"

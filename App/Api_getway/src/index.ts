@@ -6,9 +6,7 @@ import helmet from "helmet"
 import ratelimit, { MINUTE } from "express-rate-limit";
 import { AppError, errorHandlear, httpLoger, logger, successResponse } from "shared"
 import { createProxyMiddleware } from "http-proxy-middleware"
-
-
-
+import { getwayAuth } from "./middleware/gatwayAuth"
 
 
 config({ path: resolve(process.cwd(), ".env") })
@@ -24,7 +22,11 @@ const app = express()
 
 // secure http header
 app.use(helmet())
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:4000",
+    credentials: true
+}))
+
 app.use(ratelimit({
     windowMs: 15 * MINUTE,
     limit: 100,
@@ -44,6 +46,7 @@ app.use("/health", (_req, res) => {
 
 
 app.use("/auth",
+    getwayAuth,
     createProxyMiddleware({
         target: AUTH_SERVICE_URL,
         changeOrigin: true,

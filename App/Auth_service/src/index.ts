@@ -8,12 +8,12 @@ import { resolve } from "node:path";
 import { AppError, errorHandlear, httpLoger, successResponse, initPool, requireGatwaySecret } from "shared";
 import authRouter from "./routes/auth.router"
 
-const envPath = resolve(process.cwd(), "../../.env");
+const envPath = resolve(process.cwd(), ".env");
+const workspaceEnvPath = resolve(process.cwd(), "../../.env");
 config({ path: envPath });
+config({ path: workspaceEnvPath });
 
-console.log("Loaded AUTH_PORT:", process.env.AUTH_PORT);
-
-const PORT = process.env.AUTH_PORT || 3001;
+const PORT = process.env.AUTH_PORT || process.env.PORT || 3001;
 
 const app = express();
 

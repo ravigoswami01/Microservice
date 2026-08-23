@@ -6,16 +6,14 @@ import helmet from "helmet"
 import ratelimit, { MINUTE } from "express-rate-limit";
 import { AppError, errorHandlear, httpLoger, logger, successResponse } from "shared"
 import { createProxyMiddleware } from "http-proxy-middleware"
-import { getwayAuth } from "./middleware/gatwayAuth"
+import { gatewayAuth } from "./middleware/gatwayAuth"
 
 
 config({ path: resolve(process.cwd(), ".env") })
 config({ path: resolve(process.cwd(), "../../.env") })
 
-
-const PORT = process.env.PORT || 3000;
-
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL || "http://localhost:4000"
+const PORT = process.env.GATEWAY_PORT || process.env.PORT || 3000;
+const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL || "http://localhost:4000";
 
 
 const app = express()
@@ -41,18 +39,20 @@ app.use("/health", (_req, res) => {
     successResponse(res, { service: "api_getway" });
 })
 
-// create proxy 
-// auth proxt => :4001/auth/* gatway
 
 
-app.use("/auth",
-    getwayAuth,
+app.use(
+    "/auth",
+    gatewayAuth,
     createProxyMiddleware({
         target: AUTH_SERVICE_URL,
         changeOrigin: true,
-        pathRewrite: (path) => `/auth${path}`
+        pathRewrite: (reqPath) => {
+            // the auth service expects the full /auth/* route, not just /login or /me
+            return reqPath.startsWith("/auth") ? reqPath : `/auth${reqPath}`;
+        },
     }),
-)
+);
 
 app.use((_req, _res, next) => {
     next(new AppError(404, "Router not found"))

@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "dev:auth": "npm run -w auth_service",
+    "dev:task": "npm run -w task_service",
     "dev:getway": " npm run -w api_getway",
     "db:migrate": "tsx script/db_migrate.ts"
   },

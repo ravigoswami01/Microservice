@@ -64,6 +64,7 @@ export function gatewayAuth(req: Request, _res: Response, next: NextFunction) {
         }
 
         attachUserHeaders(req, payload.userId, payload.role);
+        console.log("thiisn 6767888888888888", allowedRoles)
         return next();
     } catch (err) {
         if (err instanceof AppError) {
